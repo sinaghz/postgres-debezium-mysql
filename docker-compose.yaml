@@ -15,7 +15,7 @@ services:
     environment:
      - ZOOKEEPER_CONNECT=zookeeper:2181
   mysql:
-    image: demo-registry.digicdn.dev/library/mysql:8.0
+    image: mysql:8.0
     restart: always
     environment:
       MYSQL_DATABASE: 'shipment_db'
@@ -60,3 +60,12 @@ services:
      - CONFIG_STORAGE_TOPIC=my_connect_configs
      - OFFSET_STORAGE_TOPIC=my_connect_offsets
      - STATUS_STORAGE_TOPIC=my_source_connect_statuses
+#  read_api:
+#    build:
+#      context: read_api
+#    command: uvicorn app.main:app --host 0.0.0.0
+#    restart: on-failure
+#    ports:
+#      - 8000:8000
+#    depends_on:
+#      - mysql

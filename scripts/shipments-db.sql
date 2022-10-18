@@ -1,6 +1,6 @@
 create table if not exists orders
 (
-    id           bigint not null
+    id           int not null
         constraint orders_pk
             primary key,
     price        real,
@@ -13,7 +13,7 @@ create table if not exists shipments
 (
     id  bigint not null
         primary key,
-    order_id     bigint not null
+    order_id     int not null
         constraint shipments_orders_id_fk
             references orders
             on update cascade on delete cascade,

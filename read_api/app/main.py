@@ -26,7 +26,7 @@ def read_orders(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     return orders
 
 
-@app.get("/shipments/", response_model=List[schemas.Item])
+@app.get("/shipments/", response_model=List[schemas.Shipment])
 def read_shipments(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     shipments = crud.get_shipments(db, skip=skip, limit=limit)
     return shipments

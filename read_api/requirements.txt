@@ -1,6 +1,7 @@
-fastapi~=0.71.0
-uvicorn~=0.15.0
+fastapi
+uvicorn
 SQLAlchemy~=1.4.29
-pydantic==1.9.0
-python-dotenv==0.19.2
-mysql-python
+pydantic
+python-dotenv
+mysqlclient
+psycopg2

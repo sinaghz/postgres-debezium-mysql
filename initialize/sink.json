@@ -1,0 +1,22 @@
+{
+    "name": "shipment-sink",
+    "config": {
+        "connector.class": "io.confluent.connect.jdbc.JdbcSinkConnector",
+        "tasks.max": "1",
+        "topics.regex": "pg\\.public\\.\\w+",
+        "connection.url": "jdbc:mysql://mysql:3306/shipment_db",
+        "connection.user": "shipments",
+        "connection.password": "shippw",
+        "transforms": "unwrap,route",
+        "transforms.unwrap.type": "io.debezium.transforms.ExtractNewRecordState",
+        "transforms.unwrap.drop.tombstones": "false",
+        "transforms.route.replacement": "$3",
+        "transforms.route.regex": "([^.]+)\\.([^.]+)\\.([^.]+)",
+        "transforms.route.type": "org.apache.kafka.connect.transforms.RegexRouter",
+        "value.converter":"org.apache.kafka.connect.json.JsonConverter",
+        "auto.create": "true",
+        "insert.mode": "upsert",
+        "delete.enabled": "true",
+        "pk.mode": "record_key"
+    }
+}

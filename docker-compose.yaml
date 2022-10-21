@@ -14,17 +14,6 @@ services:
      - zookeeper
     environment:
      - ZOOKEEPER_CONNECT=zookeeper:2181
-  mysql:
-    image: mysql:8.0
-    restart: always
-    environment:
-      MYSQL_DATABASE: 'shipment_db'
-      MYSQL_USER: 'shipments'
-      MYSQL_PASSWORD: 'shippw'
-      MYSQL_ROOT_PASSWORD: '123456'
-      MYSQL_ROOT_HOST: '%'
-    ports:
-      - 3306:3306
   postgres:
     image: debezium/postgres:13
     ports:
@@ -41,6 +30,19 @@ services:
       - PGPASSWORD=postgrespw
     volumes:
       - ./scripts:/docker-entrypoint-initdb.d
+  mysql:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'shipment_db'
+      MYSQL_USER: 'shipments'
+      MYSQL_PASSWORD: 'shippw'
+      MYSQL_ROOT_PASSWORD: '123456'
+      MYSQL_ROOT_HOST: '%'
+    ports:
+      - 3306:3306
+    depends_on:
+      - postgres
   connect:
     image: debezium/connect-jdbc-es:${DEBEZIUM_VERSION}
     build:
@@ -60,12 +62,13 @@ services:
      - CONFIG_STORAGE_TOPIC=my_connect_configs
      - OFFSET_STORAGE_TOPIC=my_connect_offsets
      - STATUS_STORAGE_TOPIC=my_source_connect_statuses
-#  read_api:
-#    build:
-#      context: read_api
-#    command: uvicorn app.main:app --host 0.0.0.0
-#    restart: on-failure
-#    ports:
-#      - 8000:8000
-#    depends_on:
-#      - mysql
+  read_api:
+    build:
+      context: read_api
+    volumes:
+      - ./initialize:/initialize
+    command: /bin/sh -c "chmod 755 /initialize/* && dockerize -wait tcp://mysql:3306 -timeout 60s -wait tcp://postgres:5432 -timeout 60s -wait tcp://connect:8083 -timeout 60s python /initialize/check.py"
+    ports:
+      - 8000:8000
+    depends_on:
+      - connect

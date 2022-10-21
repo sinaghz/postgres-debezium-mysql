@@ -75,7 +75,9 @@ curl -i -X POST -H "Accept:application/json" -H  "Content-Type:application/json"
 
 
 2. You can Check the connectors:
-```http://localhost:8083/connectors```
+```
+http://localhost:8083/connectors
+```
 
 
 
